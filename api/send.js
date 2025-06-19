@@ -13,7 +13,7 @@ export default async (req, res) => {
   try {
     const data = await resend.emails.send({
       from: 'Contact <contact@tonsite.com>',
-      to: 'ton.email@example.com',
+      to: 'mlucas44@outlook.fr',
       subject: `📩 Nouveau message : ${subject}`,
       replyTo: email,
       html: `
