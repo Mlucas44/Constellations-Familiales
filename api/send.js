@@ -1,30 +1,31 @@
-const { Resend } = require('resend')
+// send.js ou send.mjs
+import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend('re_YX2oW4fr_GH6HbVoyxgpqmBRGG2VbrcoR');
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Méthode non autorisée' })
+    return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { name, email, subject, message } = req.body
+  const { name, email, subject, message } = req.body;
 
   try {
     const data = await resend.emails.send({
       from: 'Contact <contact@tonsite.com>',
-      to: 'ton.email@exemple.com',
+      to: 'ton.email@example.com',
       subject: `📩 Nouveau message : ${subject}`,
       replyTo: email,
-      html: `DD
+      html: `
         <p><strong>Nom :</strong> ${name}</p>
         <p><strong>Email :</strong> ${email}</p>
         <p><strong>Message :</strong><br/>${message}</p>
       `
-    })
+    });
 
-    return res.status(200).json({ success: true, data })
+    return res.status(200).json({ success: true, data });
   } catch (error) {
-    console.error('Erreur Resend :', error)
-    return res.status(500).json({ success: false, error: String(error) })
+    console.error('Erreur Resend :', error);
+    return res.status(500).json({ success: false, error: String(error) });
   }
-}
+};

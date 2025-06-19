@@ -80,7 +80,7 @@ const closeMenu = () => {
   display: flex;
   width: var(--logo-width);
   height: var(--logo-height);
-  background-image: url('@/assets/images/Logo.svg');
+  background-image: url('/assets/images/Logo.svg');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
