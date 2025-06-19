@@ -48,11 +48,25 @@ const formData = ref<FormData>({
   subject: '',
   message: ''
 })
+const handleSubmit = async () => {
+  try {
+    const response = await $fetch('/api/send', {
+      method: 'POST',
+      body: formData.value
+    })
 
-const handleSubmit = () => {
-  console.log('Formulaire soumis:', formData.value)
-  // TODO: Implémenter la logique d'envoi du formulaire
+    if (response.success) {
+      alert('Message envoyé avec succès ✅')
+      formData.value = { name: '', email: '', subject: '', message: '' }
+    } else {
+      alert('Erreur ❌')
+    }
+  } catch (err) {
+    console.error(err)
+    alert("Erreur lors de l'envoi")
+  }
 }
+
 </script>
 
 <style lang="css" scoped>
