@@ -1,10 +1,8 @@
-// api/send.ts
-import { Resend } from 'resend'
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+const { Resend } = require('resend')
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' })
   }
@@ -20,13 +18,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       html: `
         <p><strong>Nom :</strong> ${name}</p>
         <p><strong>Email :</strong> ${email}</p>
-        <p><strong>Message :</strong></p>
-        <p>${message}</p>
+        <p><strong>Message :</strong><br/>${message}</p>
       `
     })
 
     return res.status(200).json({ success: true, data })
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Erreur Resend :', error)
     return res.status(500).json({ success: false, error: String(error) })
   }
