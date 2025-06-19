@@ -19,3 +19,7 @@ import ContactSection from "@/components/sections/ContactSection.vue";
 import FaqSection from "@/components/sections/FaqSection/FaqSection.vue";
 import SiteFooter from "@/layout/SiteFooter.vue";
 </script>
+
+<noscript>
+  <strong>Ce site nécessite JavaScript pour fonctionner correctement.</strong>
+</noscript>
