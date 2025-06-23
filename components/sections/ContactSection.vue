@@ -25,6 +25,10 @@
           <BaseInput v-model="formData.email" placeholder="Email" type="email" />
           <BaseInput v-model="formData.subject" placeholder="Objet" />
           <BaseTextarea v-model="formData.message" placeholder="Message" />
+          
+          <!-- reCAPTCHA -->
+          <Recaptcha v-if="recaptchaLoaded" @verify="onVerify" class="recaptcha" />
+
           <div class="contact__btn-wrapper">
             <BaseButton label="Envoyer" :inverted="true" type="submit" />
           </div>
@@ -36,6 +40,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRecaptcha } from '#imports'
+
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
@@ -48,16 +54,32 @@ const formData = ref<FormData>({
   subject: '',
   message: ''
 })
+
+const token = ref('')
+const { recaptchaLoaded } = useRecaptcha()
+
+const onVerify = (newToken: string) => {
+  token.value = newToken
+}
 const handleSubmit = async () => {
+  if (!token.value) {
+    alert('Veuillez valider le reCAPTCHA')
+    return
+  }
+
   try {
     const response = await $fetch('/api/send', {
       method: 'POST',
-      body: formData.value
+      body: {
+        ...formData.value,
+        token: token.value
+      }
     })
 
     if (response.success) {
       alert('Message envoyé avec succès ✅')
       formData.value = { name: '', email: '', subject: '', message: '' }
+      token.value = ''
     } else {
       alert('Erreur ❌')
     }

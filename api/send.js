@@ -1,15 +1,39 @@
-// send.js ou send.mjs
 import { Resend } from 'resend';
+import fetch from 'node-fetch'; // utile si ce n’est pas global dans ton runtime
 
 const resend = new Resend('re_YX2oW4fr_GH6HbVoyxgpqmBRGG2VbrcoR');
+const RECAPTCHA_SECRET = '6LekpmorAAAAAFFL2VoZR81JJI1krUXGTbIfJ7mL'; // à remplacer (ex: dans une variable d'environnement)
 
 export default async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { name, email, subject, message } = req.body;
+  const { name, email, subject, message, token } = req.body;
 
+  // 🔐 Vérification du token reCAPTCHA
+  const recaptchaRes = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: RECAPTCHA_SECRET,
+        response: token
+      })
+    }
+  );
+
+  const recaptchaJson = await recaptchaRes.json();
+
+  if (!recaptchaJson.success || recaptchaJson.score < 0.5) {
+    return res.status(403).json({
+      success: false,
+      error: 'Échec de la vérification reCAPTCHA'
+    });
+  }
+
+  // 📩 Envoi de l'e-mail
   try {
     const data = await resend.emails.send({
       from: 'onboarding@resend.dev',
