@@ -27,7 +27,14 @@
           <BaseTextarea v-model="formData.message" placeholder="Message" />
           
           <!-- reCAPTCHA -->
-          <Recaptcha v-if="recaptchaLoaded" @verify="onVerify" class="recaptcha" />
+     
+           <Recaptcha
+  sitekey="6LekpmorAAAAADu1muwobn3no6DOoKS9sJDI9U2B"
+  @verify="onVerify"
+  theme="light"
+  size="normal"
+/>
+<div ref="recaptchaContainer"></div>
 
           <div class="contact__btn-wrapper">
             <BaseButton label="Envoyer" :inverted="true" type="submit" />
@@ -39,8 +46,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRecaptcha } from '#imports'
+import { onMounted, ref } from 'vue'
+
+const recaptchaContainer = ref<HTMLDivElement | null>(null)
+const token = ref('')
+
+// remplace par ta propre clé publique
+const siteKey = '6LekpmorAAAAADu1muwobn3no6DOoKS9sJDI9U2B'
+
+onMounted(() => {
+  if (window.grecaptcha) {
+    window.grecaptcha.ready(() => {
+      window.grecaptcha.render(recaptchaContainer.value!, {
+        sitekey: siteKey,
+        callback: (responseToken: string) => {
+          token.value = responseToken
+        }
+      })
+    })
+  } else {
+    console.error('reCAPTCHA non chargé')
+  }
+})
 
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
@@ -55,8 +82,7 @@ const formData = ref<FormData>({
   message: ''
 })
 
-const token = ref('')
-const { recaptchaLoaded } = useRecaptcha()
+
 
 const onVerify = (newToken: string) => {
   token.value = newToken
