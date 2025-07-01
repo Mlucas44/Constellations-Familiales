@@ -12,16 +12,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          version: 8
+          node-version: "18" # ou la version que vous ciblez
+          cache: "npm" # active le cache des modules npm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci # ou `npm install` si vous n'avez pas de lockfile
 
       - name: Generate static site
-        run: pnpm run generate
+        run: npm run generate
 
       - name: Run E2E tests
-        run: pnpm run test:e2e
+        run: npm run test:e2e
