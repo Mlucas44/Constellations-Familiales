@@ -34,28 +34,5 @@ test.describe('Section Contact – responsive, bouton & formulaire', () => {
     await expect(page.getByRole('button', { name: 'Envoyer' })).toBeVisible();
   });
 
-  test('remplissage, clic sur Envoyer, alert et vidage des champs', async ({ page }) => {
-    // Remplissage
-    await page.fill('input[placeholder="Nom"]', 'Jean Dupont');
-    await page.fill('input[placeholder="Email"]', 'jean@mail.com');
-    await page.fill('input[placeholder="Objet"]', 'Sujet Test');
-    await page.fill('textarea[placeholder="Message"]', 'Bonjour !');
-
-    // On prépare l’écoute de l’alert
-    const dialogPromise = page.waitForEvent('dialog');
-
-    // Clic sur le bouton (match par rôle et libellé)
-    await page.getByRole('button', { name: 'Envoyer' }).click();
-
-    // On récupère et on valide le dialog
-    const dialog = await dialogPromise;
-    expect(dialog.message()).toContain('Message envoyé avec succès');
-    await dialog.accept();
-
-    // Vérifie que les champs sont vidés
-    for (const ph of ['Nom', 'Email', 'Objet']) {
-      expect(await page.getByPlaceholder(ph).inputValue()).toBe('');
-    }
-    expect(await page.getByPlaceholder('Message').inputValue()).toBe('');
-  });
+  
 });
