@@ -33,6 +33,4 @@ test.describe('Section Contact – responsive, bouton & formulaire', () => {
     await expect(page.getByPlaceholder('Message')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Envoyer' })).toBeVisible();
   });
-
-  
 });
